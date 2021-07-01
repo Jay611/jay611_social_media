@@ -26,23 +26,23 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         <h3 className="text-uppercase text-center mb-4">Social</h3>
         <div className="mb-3">
-          <label htmlFor="exampleInputEmail1" className="form-label">
+          <label htmlFor="email" className="form-label">
             Email address
           </label>
           <input
             type="email"
             name="email"
             className="form-control"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
+            id="email"
+            value={email}
             onChange={handleChangeInput}
           />
-          <div id="emailHelp" className="form-text">
+          <small className="form-text text-muted">
             We'll never share your email with anyone else.
-          </div>
+          </small>
         </div>
         <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
+          <label htmlFor="password" className="form-label">
             Password
           </label>
           <div className="pass">
@@ -50,7 +50,8 @@ const Login = () => {
               type={typePass ? "text" : "password"}
               name="password"
               className="form-control"
-              id="exampleInputPassword1"
+              id="password"
+              value={password}
               onChange={handleChangeInput}
             />
             <small onClick={() => setTypePass(!typePass)}>
@@ -69,7 +70,7 @@ const Login = () => {
         <p className="my-2">
           You don't have an account?{" "}
           <Link to="/register" style={{ color: "crimson" }}>
-            Register
+            Register Now
           </Link>
         </p>
       </form>
