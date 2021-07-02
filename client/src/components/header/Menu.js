@@ -31,7 +31,7 @@ const Menu = () => {
             </Link>
           </li>
         ))}
-        <li className="nav-item dropdown">
+        <li className="nav-item dropdown profile">
           <span
             className="nav-link dropdown-toggle"
             id="navbarDropdown"

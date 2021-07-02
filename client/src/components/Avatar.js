@@ -8,7 +8,7 @@ const Avatar = ({ src, size }) => {
       src={src}
       alt="avatar"
       className={size}
-      style={{ filter: `${theme ? "invert(0.4)" : "invert(0)"}` }}
+      style={{ filter: `${theme ? "invert(1)" : "invert(0)"}` }}
     />
   );
 };

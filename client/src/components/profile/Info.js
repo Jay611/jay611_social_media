@@ -3,6 +3,10 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Avatar from "../Avatar";
 import { getProfileUsers } from "../../redux/actions/profileAction";
+import EditProfile from "./EditProfile";
+import FollowBtn from "../FollowBtn";
+import Followers from "./Followers";
+import Followings from "./Followings";
 
 const Info = () => {
   const { id } = useParams();
@@ -10,6 +14,10 @@ const Info = () => {
   const dispatch = useDispatch();
 
   const [userData, setUserData] = useState([]);
+  const [onEdit, setOnEdit] = useState(false);
+
+  const [showFollowers, setShowFollowers] = useState(false);
+  const [showFollowings, setShowFollowings] = useState(false);
 
   useEffect(() => {
     if (id === auth.user._id) {
@@ -30,24 +38,45 @@ const Info = () => {
           <div className="info_content">
             <div className="info_content_title">
               <h2>{user.username}</h2>
-              <button className="btn btn-outline-info">Edit Profile</button>
+              {user._id === auth.user._id ? (
+                <button
+                  className="btn btn-outline-info"
+                  onClick={() => setOnEdit(true)}
+                >
+                  Edit Profile
+                </button>
+              ) : (
+                <FollowBtn user={user} />
+              )}
             </div>
 
             <div className="follow_btn">
-              <span className="me-4">{user.followers.length} Followers</span>
-              <span className="ms-4">{user.followings.length} Followings</span>
+              <span className="me-4" onClick={() => setShowFollowers(true)}>
+                {user.followers.length} Followers
+              </span>
+              <span className="ms-4" onClick={() => setShowFollowings(true)}>
+                {user.followings.length} Followings
+              </span>
             </div>
 
             <h6>
-              {user.fullname} {user.mobile}
+              {user.fullname} <span className="text-danger">{user.mobile}</span>
             </h6>
             <p className="m-0">{user.address}</p>
-            <h6>{user.email}</h6>
+            <h6 className="m-0">{user.email}</h6>
             <a href={user.website} target="_blank" rel="noreferrer">
               {user.website}
             </a>
             <p>{user.story}</p>
           </div>
+
+          {onEdit && <EditProfile user={user} setOnEdit={setOnEdit} />}
+          {showFollowers && (
+            <Followers users={user.followers} setShowFollowers={setShowFollowers} />
+          )}
+          {showFollowings && (
+            <Followings users={user.followings} setShowFollowings={setShowFollowings} />
+          )}
         </div>
       ))}
     </div>
