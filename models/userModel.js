@@ -27,7 +27,7 @@ const userSchema = mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "https://res.cloudinary.com/dhkcdaal8/image/upload/v1625167151/socialMedia/noAvatar_l8tmbi.png",
+      default: "https://res.cloudinary.com/dhkcdaal8/image/upload/v1625192781/socialMedia/noAvatar_c3zi3f.png",
     },
     role: {
       type: String,
