@@ -68,3 +68,9 @@ input[type=number] {
 
 /* ---------- Profile ---------- */
 @import url("./profile.css");
+
+/* ---------- Home ---------- */
+@import url("./home.css");
+
+/* ---------- Status Modal ---------- */
+@import url("./status_modal.css");
