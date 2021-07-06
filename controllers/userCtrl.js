@@ -32,7 +32,7 @@ const userCtrl = {
         return res.status(400).json({ msg: "Please add your full name" });
 
       await Users.findOneAndUpdate(
-        { _id: req.user.id },
+        { _id: req.user._id },
         {
           avatar,
           fullname,
@@ -53,7 +53,7 @@ const userCtrl = {
     try {
       const user = await Users.find({
         _id: req.params.id,
-        followers: req.user.id,
+        followers: req.user._id,
       });
       if (user.length > 0)
         return res.status(400).json({ msg: "You followed this user." });
@@ -61,13 +61,13 @@ const userCtrl = {
       await Users.findOneAndUpdate(
         { _id: req.params.id },
         {
-          $push: { followers: req.user.id },
+          $push: { followers: req.user._id },
         },
         { new: true }
       );
 
       await Users.findOneAndUpdate(
-        { _id: req.user.id },
+        { _id: req.user._id },
         {
           $push: { followings: req.params.id },
         },
@@ -84,13 +84,13 @@ const userCtrl = {
       await Users.findOneAndUpdate(
         { _id: req.params.id },
         {
-          $pull: { followers: req.user.id },
+          $pull: { followers: req.user._id },
         },
         { new: true }
       );
 
       await Users.findOneAndUpdate(
-        { _id: req.user.id },
+        { _id: req.user._id },
         {
           $pull: { followings: req.params.id },
         },
