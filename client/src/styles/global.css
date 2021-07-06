@@ -50,7 +50,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
@@ -74,3 +74,13 @@ input[type=number] {
 
 /* ---------- Status Modal ---------- */
 @import url("./status_modal.css");
+
+/* ---------- Status Modal ---------- */
+@import url("./comments.css");
+
+
+.mode {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}

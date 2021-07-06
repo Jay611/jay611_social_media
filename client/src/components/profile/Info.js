@@ -7,6 +7,7 @@ import EditProfile from "./EditProfile";
 import FollowBtn from "../FollowBtn";
 import Followers from "./Followers";
 import Followings from "./Followings";
+import { GLOBALTYPES } from "../../redux/actions/globalTypes";
 
 const Info = () => {
   const { id } = useParams();
@@ -28,6 +29,14 @@ const Info = () => {
       setUserData(newData);
     }
   }, [id, auth, dispatch, profile.users]);
+
+  useEffect(() => {
+    if (showFollowers || showFollowings || onEdit) {
+      dispatch({ type: GLOBALTYPES.MODAL, payload: true });
+    } else {
+      dispatch({ type: GLOBALTYPES.MODAL, payload: false });
+    }
+  }, [dispatch, showFollowers, showFollowings, onEdit]);
 
   return (
     <div className="info">
@@ -72,10 +81,16 @@ const Info = () => {
 
           {onEdit && <EditProfile user={user} setOnEdit={setOnEdit} />}
           {showFollowers && (
-            <Followers users={user.followers} setShowFollowers={setShowFollowers} />
+            <Followers
+              users={user.followers}
+              setShowFollowers={setShowFollowers}
+            />
           )}
           {showFollowings && (
-            <Followings users={user.followings} setShowFollowings={setShowFollowings} />
+            <Followings
+              users={user.followings}
+              setShowFollowings={setShowFollowings}
+            />
           )}
         </div>
       ))}
