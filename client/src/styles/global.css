@@ -75,9 +75,11 @@ input[type="number"] {
 /* ---------- Status Modal ---------- */
 @import url("./status_modal.css");
 
-/* ---------- Status Modal ---------- */
+/* ---------- Comments ---------- */
 @import url("./comments.css");
 
+/* ---------- Post Thumb ---------- */
+@import url("./post_thumb.css");
 
 .mode {
   width: 100%;
