@@ -5,26 +5,60 @@ import moment from "moment";
 import LikeButton from "../../LikeButton";
 import { useSelector, useDispatch } from "react-redux";
 import CommentMenu from "./CommentMenu";
+import {
+  updateComment,
+  likeComment,
+  unLikeComment,
+} from "../../../redux/actions/commentAction";
 
 const CommentCard = ({ comment, post }) => {
   const { auth } = useSelector((state) => state);
+  const dispatch = useDispatch();
 
   const [content, setContent] = useState("");
   const [readMore, setReadMore] = useState(false);
+  const [onEdit, setOnEdit] = useState(false);
   const [isLike, setIsLike] = useState(false);
+  const [loadLike, setLoadLike] = useState(false);
 
   useEffect(() => {
     setContent(comment.content);
-  }, [comment]);
+    if (comment.likes.find((like) => like._id === auth.user._id)) {
+      setIsLike(true);
+    }
+  }, [comment, auth.user._id]);
 
   const styleCard = {
     opacity: comment._id ? 1 : 0.5,
     pointerEvents: comment._id ? "inherit" : "none",
   };
 
-  const handleLike = () => {};
+  const handleUpdate = () => {
+    if (comment.content !== content) {
+      dispatch(updateComment({ comment, post, content, auth }));
+      setOnEdit(false);
+    } else {
+      setOnEdit(false);
+    }
+  };
 
-  const handleUnLike = () => {};
+  const handleLike = async() => {
+    if (loadLike) return;
+    setIsLike(true);
+
+    setLoadLike(true);
+    await dispatch(likeComment({ comment, post, auth }));
+    setLoadLike(false);
+  };
+
+  const handleUnLike = async () => {
+    if (loadLike) return;
+    setIsLike(false);
+
+    setLoadLike(true);
+    await dispatch(unLikeComment({ comment, post, auth }));
+    setLoadLike(false);
+  };
 
   return (
     <div className="comment_card mt-2" style={styleCard}>
@@ -35,26 +69,52 @@ const CommentCard = ({ comment, post }) => {
 
       <div className="comment_content">
         <div className="flex-fill">
-          <div>
-            <span>
-              {content.length < 100
-                ? content
-                : readMore
-                ? content + " "
-                : content.slice(0, 100) + "..."}
-            </span>
-            {content.length > 100 && (
-              <span className="readMore" onClick={() => setReadMore(!readMore)}>
-                {readMore ? "Hide content" : "Read more"}
+          {onEdit ? (
+            <textarea
+              rows="5"
+              value={content}
+              data-gramm="false"
+              onChange={(e) => setContent(e.target.value)}
+            />
+          ) : (
+            <div>
+              <span>
+                {content.length < 100
+                  ? content
+                  : readMore
+                  ? content + " "
+                  : content.slice(0, 100) + "..."}
               </span>
-            )}
-          </div>
+              {content.length > 100 && (
+                <span
+                  className="readMore"
+                  onClick={() => setReadMore(!readMore)}
+                >
+                  {readMore ? "Hide content" : "Read more"}
+                </span>
+              )}
+            </div>
+          )}
           <div style={{ cursor: "pointer" }}>
             <small className="text-muted me-3">
               {moment(comment.createdAt).fromNow()}
             </small>
             <small className="fw-bold me-3">{comment.likes.length} likes</small>
-            <small className="fw-bold me-3">reply</small>
+            {onEdit ? (
+              <>
+                <small className="fw-bold me-3" onClick={handleUpdate}>
+                  update
+                </small>
+                <small
+                  className="fw-bold me-3"
+                  onClick={() => setOnEdit(false)}
+                >
+                  cancel
+                </small>
+              </>
+            ) : (
+              <small className="fw-bold me-3">reply</small>
+            )}
           </div>
         </div>
 
@@ -62,7 +122,12 @@ const CommentCard = ({ comment, post }) => {
           className="d-flex align-items-center mx-2"
           style={{ cursor: "pointer" }}
         >
-          <CommentMenu post={post} comment={comment} auth={auth} />
+          <CommentMenu
+            post={post}
+            comment={comment}
+            auth={auth}
+            setOnEdit={setOnEdit}
+          />
           <LikeButton
             isLike={isLike}
             handleLike={handleLike}

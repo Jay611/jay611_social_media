@@ -1,10 +1,10 @@
 import React from "react";
 
-const CommentMenu = ({ post, comment, auth }) => {
+const CommentMenu = ({ post, comment, auth, setOnEdit }) => {
   const MenuItem = () => {
     return (
       <>
-        <div className="dropdown-item">
+        <div className="dropdown-item" onClick={() => setOnEdit(true)}>
           <span className="material-icons">create</span> Edit
         </div>
         <div className="dropdown-item">
@@ -19,11 +19,18 @@ const CommentMenu = ({ post, comment, auth }) => {
       {(post.user._id === auth.user._id ||
         comment.user._id === auth.user._id) && (
         <div className="nav-item dropdown">
-          <span className="material-icons" id="moreLink" data-bs-toggle="dropdown">
+          <span
+            className="material-icons"
+            id="moreLink"
+            data-bs-toggle="dropdown"
+          >
             more_vert
           </span>
 
-          <div className="dropdown-menu dropdown-menu-end" aria-labelledby="moreLink">
+          <div
+            className="dropdown-menu dropdown-menu-end"
+            aria-labelledby="moreLink"
+          >
             {post.user._id === auth.user._id ? (
               comment.user._id === auth.user._id ? (
                 MenuItem()
