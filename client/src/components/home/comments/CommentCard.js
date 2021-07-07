@@ -10,8 +10,9 @@ import {
   likeComment,
   unLikeComment,
 } from "../../../redux/actions/commentAction";
+import InputComment from "../InputComment";
 
-const CommentCard = ({ comment, post }) => {
+const CommentCard = ({ children, comment, post }) => {
   const { auth } = useSelector((state) => state);
   const dispatch = useDispatch();
 
@@ -20,9 +21,12 @@ const CommentCard = ({ comment, post }) => {
   const [onEdit, setOnEdit] = useState(false);
   const [isLike, setIsLike] = useState(false);
   const [loadLike, setLoadLike] = useState(false);
+  const [onReply, setOnReply] = useState(false);
 
   useEffect(() => {
     setContent(comment.content);
+    setIsLike(false)
+    setOnReply(false)
     if (comment.likes.find((like) => like._id === auth.user._id)) {
       setIsLike(true);
     }
@@ -42,7 +46,7 @@ const CommentCard = ({ comment, post }) => {
     }
   };
 
-  const handleLike = async() => {
+  const handleLike = async () => {
     if (loadLike) return;
     setIsLike(true);
 
@@ -58,6 +62,11 @@ const CommentCard = ({ comment, post }) => {
     setLoadLike(true);
     await dispatch(unLikeComment({ comment, post, auth }));
     setLoadLike(false);
+  };
+
+  const handleReply = () => {
+    if (onReply) return setOnReply(false);
+    setOnReply({ ...comment });
   };
 
   return (
@@ -78,6 +87,11 @@ const CommentCard = ({ comment, post }) => {
             />
           ) : (
             <div>
+              {comment.tag && comment.tag._id !== comment.user._id && (
+                <Link to={`/profile/${comment.tag._id}`} className="me-1">
+                  @{comment.tag.username}
+                </Link>
+              )}
               <span>
                 {content.length < 100
                   ? content
@@ -113,7 +127,9 @@ const CommentCard = ({ comment, post }) => {
                 </small>
               </>
             ) : (
-              <small className="fw-bold me-3">reply</small>
+              <small className="fw-bold me-3" onClick={handleReply}>
+                {onReply ? "cancel" : "reply"}
+              </small>
             )}
           </div>
         </div>
@@ -125,7 +141,6 @@ const CommentCard = ({ comment, post }) => {
           <CommentMenu
             post={post}
             comment={comment}
-            auth={auth}
             setOnEdit={setOnEdit}
           />
           <LikeButton
@@ -135,6 +150,14 @@ const CommentCard = ({ comment, post }) => {
           />
         </div>
       </div>
+      {onReply && (
+        <InputComment post={post} onReply={onReply} setOnReply={setOnReply}>
+          <Link to={`/profile/${onReply.user._id}`} className="me-1">
+            @{onReply.user.username}:
+          </Link>
+        </InputComment>
+      )}
+      {children}
     </div>
   );
 };
