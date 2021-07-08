@@ -9,6 +9,7 @@ export const PROFILE_TYPES = {
   UNFOLLOW: "UNFOLLOW",
   GET_ID: "GET_PROFILE_ID",
   GET_POSTS: "GET_PROFILE_POSTS",
+  UPDATE_POST: "UPDATE_PROFILE_POST",
 };
 
 export const getProfileUsers =
@@ -19,7 +20,7 @@ export const getProfileUsers =
     try {
       dispatch({ type: PROFILE_TYPES.LOADING, payload: true });
       const users = await getDataAPI(`user/${id}`, auth.token);
-      const posts = await getDataAPI(`user_post/${id}`, auth.token);
+      const posts = await getDataAPI(`user_posts/${id}`, auth.token);
 
       dispatch({ type: PROFILE_TYPES.GET_USER, payload: users.data });
       dispatch({
