@@ -3,22 +3,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Send from "../../../images/send.svg";
 import LikeButton from "../../LikeButton";
+import ShareModal from "../../ShareModal";
 import {
   likePost,
   unLikePost,
   savePost,
   unSavePost,
 } from "../../../redux/actions/postAction";
+import { BASE_URL } from "../../../utils/config";
 
 const CardFooter = ({ post }) => {
   const [isLike, setIsLike] = useState(false);
   const [loadLike, setLoadLike] = useState(false);
+  const [isShare, setIsShare] = useState(false);
 
-  const { auth } = useSelector((state) => state);
+  const { auth, theme } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   const [saved, setSaved] = useState(false);
-  const [saveLoad, setSaveLoad] = useState(false)
+  const [saveLoad, setSaveLoad] = useState(false);
 
   //Like
   useEffect(() => {
@@ -80,18 +83,12 @@ const CardFooter = ({ post }) => {
             <i className="far fa-comment" />
           </Link>
 
-          <img src={Send} alt="Send" />
+          <img src={Send} alt="Send" onClick={() => setIsShare(!isShare)} />
         </div>
         {saved ? (
-          <i
-            className="fas fa-bookmark text-info"
-            onClick={handleUnSavePost}
-          />
+          <i className="fas fa-bookmark text-info" onClick={handleUnSavePost} />
         ) : (
-          <i
-            className="far fa-bookmark"
-            onClick={handleSavePost}
-          />
+          <i className="far fa-bookmark" onClick={handleSavePost} />
         )}
       </div>
       <div className="d-flex justify-content-between">
@@ -102,6 +99,9 @@ const CardFooter = ({ post }) => {
           {post.comments.length} comments
         </h6>
       </div>
+      {isShare && (
+        <ShareModal url={`${BASE_URL}/post/${post._id}`} theme={theme} />
+      )}
     </div>
   );
 };

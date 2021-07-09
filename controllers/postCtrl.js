@@ -1,5 +1,6 @@
 const Posts = require("../models/postModel");
 const Users = require("../models/userModel");
+const Comments = require("../models/commentModel");
 
 class APIfeatures {
   constructor(query, queryString) {
@@ -106,13 +107,16 @@ const postCtrl = {
       if (post.length > 0)
         return res.status(400).json({ msg: "You liked this post." });
 
-      await Posts.findOneAndUpdate(
+      const like = await Posts.findOneAndUpdate(
         { _id: req.params.id },
         {
           $push: { likes: req.user._id },
         },
         { new: true }
       );
+
+      if (!like)
+        return res.status(400).json({ msg: "This post does not exist." });
 
       res.json({ msg: "Liked Post!" });
     } catch (err) {
@@ -121,13 +125,16 @@ const postCtrl = {
   },
   unLikePost: async (req, res) => {
     try {
-      await Posts.findOneAndUpdate(
+      const like = await Posts.findOneAndUpdate(
         { _id: req.params.id },
         {
           $pull: { likes: req.user._id },
         },
         { new: true }
       );
+
+      if (!like)
+        return res.status(400).json({ msg: "This post does not exist." });
 
       res.json({ msg: "UnLiked Post!" });
     } catch (err) {
@@ -159,6 +166,9 @@ const postCtrl = {
             select: "-password",
           },
         });
+
+      if (!post)
+        return res.status(400).json({ msg: "This post does not exist." });
 
       res.json({ post });
     } catch (err) {

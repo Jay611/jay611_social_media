@@ -164,7 +164,10 @@ export const savePost =
 export const unSavePost =
   ({ post, auth }) =>
   async (dispatch) => {
-    const newUser = { ...auth.user, saved: auth.user.saved.filter(id => id !== post._id) };
+    const newUser = {
+      ...auth.user,
+      saved: auth.user.saved.filter((id) => id !== post._id),
+    };
     dispatch({ type: GLOBALTYPES.AUTH, payload: { ...auth, user: newUser } });
 
     try {
