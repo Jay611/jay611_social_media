@@ -166,14 +166,14 @@ const postCtrl = {
   },
   getPostsDiscover: async (req, res) => {
     try {
-      const features = new APIfeatures(
-        Posts.find({
-          user: { $nin: [...req.user.followings, req.user._id] },
-        }),
-        req.query
-      ).paginating();
+      const newArr = [...req.user.followings, req.user._id];
 
-      const posts = await features.query.sort("-createdAt");
+      const num = req.query.num || 9;
+
+      const posts = await Posts.aggregate([
+        { $match: { user: { $nin: newArr } } },
+        { $sample: { size: Number(num) } },
+      ]);
 
       res.json({
         msg: "Success!",

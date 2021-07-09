@@ -26,7 +26,7 @@ const UserCard = ({
           onClick={handleCloseAll}
         >
           <Avatar src={user.avatar} size="big-avatar" />
-          <div className="ml-1" style={{ transform: "translateY(-2px)" }}>
+          <div className="ms-1" style={{ transform: "translateY(-2px)" }}>
             <span className="d-block">{user.username}</span>
             <small style={{ opacity: 0.7 }}>{user.fullname}</small>
           </div>
