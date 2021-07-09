@@ -27,7 +27,8 @@ const userSchema = mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "https://res.cloudinary.com/dhkcdaal8/image/upload/v1625242427/socialMedia/noAvatar_a31wwb.png",
+      default:
+        "https://res.cloudinary.com/dhkcdaal8/image/upload/v1625242427/socialMedia/noAvatar_a31wwb.png",
     },
     role: {
       type: String,
@@ -66,6 +67,7 @@ const userSchema = mongoose.Schema(
         ref: "User",
       },
     ],
+    saved: [{ type: mongoose.Types.ObjectId, ref: "Post" }],
   },
   { timestamps: true }
 );
