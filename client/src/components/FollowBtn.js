@@ -5,7 +5,7 @@ import { follow, unfollow } from "../redux/actions/profileAction";
 const FollowBtn = ({ user }) => {
   const [followed, setFollowed] = useState(false);
   const [load, setLoad] = useState(false);
-  const { auth, profile } = useSelector((state) => state);
+  const { auth, profile, socket } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const FollowBtn = ({ user }) => {
 
     setFollowed(true);
     setLoad(true);
-    await dispatch(follow({ users: profile.users, user, auth }));
+    await dispatch(follow({ users: profile.users, user, auth, socket }));
     setLoad(false);
   };
 
@@ -29,7 +29,7 @@ const FollowBtn = ({ user }) => {
 
     setFollowed(false);
     setLoad(true);
-    await dispatch(unfollow({ users: profile.users, user, auth }));
+    await dispatch(unfollow({ users: profile.users, user, auth, socket }));
     setLoad(false);
   };
 
