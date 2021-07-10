@@ -12,8 +12,8 @@ import {
 } from "../../../redux/actions/commentAction";
 import InputComment from "../InputComment";
 
-const CommentCard = ({ children, comment, post }) => {
-  const { auth } = useSelector((state) => state);
+const CommentCard = ({ children, comment, post, commentId }) => {
+  const { auth, theme } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   const [content, setContent] = useState("");
@@ -25,8 +25,8 @@ const CommentCard = ({ children, comment, post }) => {
 
   useEffect(() => {
     setContent(comment.content);
-    setIsLike(false)
-    setOnReply(false)
+    setIsLike(false);
+    setOnReply(false);
     if (comment.likes.find((like) => like._id === auth.user._id)) {
       setIsLike(true);
     }
@@ -66,7 +66,7 @@ const CommentCard = ({ children, comment, post }) => {
 
   const handleReply = () => {
     if (onReply) return setOnReply(false);
-    setOnReply({ ...comment });
+    setOnReply({ ...comment, commentId });
   };
 
   return (
@@ -77,7 +77,13 @@ const CommentCard = ({ children, comment, post }) => {
       </Link>
 
       <div className="comment_content">
-        <div className="flex-fill">
+        <div
+          className="flex-fill"
+          style={{
+            filter: theme ? "invert(1)" : "invert(0)",
+            color: theme ? "white" : "#111",
+          }}
+        >
           {onEdit ? (
             <textarea
               rows="5"
@@ -138,11 +144,7 @@ const CommentCard = ({ children, comment, post }) => {
           className="d-flex align-items-center mx-2"
           style={{ cursor: "pointer" }}
         >
-          <CommentMenu
-            post={post}
-            comment={comment}
-            setOnEdit={setOnEdit}
-          />
+          <CommentMenu post={post} comment={comment} setOnEdit={setOnEdit} />
           <LikeButton
             isLike={isLike}
             handleLike={handleLike}
