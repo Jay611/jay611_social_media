@@ -83,6 +83,7 @@
   height: 100%;
 }
 
+.status_body .show_images #file_img video,
 .status_body .show_images #file_img img {
   display: block;
   object-fit: contain;

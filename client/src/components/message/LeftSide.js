@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import { GLOBALTYPES } from "../../redux/actions/globalTypes";
-import { addUser } from "../../redux/actions/messageAction";
+import { addUser, getConversations } from "../../redux/actions/messageAction";
 
 import { getDataAPI } from "../../utils/fetchData";
 import UserCard from "../UserCard";
@@ -45,6 +45,11 @@ const LeftSide = () => {
     return "";
   };
 
+  useEffect(() => {
+    if(message.firstLoad) return;
+    dispatch(getConversations({auth}))
+  },[auth, dispatch, message.firstLoad])
+
   return (
     <>
       <form className="message_header" onSubmit={handleSearch}>
@@ -80,7 +85,7 @@ const LeftSide = () => {
                 className={`message_user ${isActive(user)}`}
                 onClick={() => handleAddUser(user)}
               >
-                <UserCard user={user}>
+                <UserCard user={user} msg={true}>
                   <i className="fas fa-circle" />
                 </UserCard>
               </div>
