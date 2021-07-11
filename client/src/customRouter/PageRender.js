@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 
 const generatePage = (pageName) => {
   const component = () => require(`../pages/${pageName}`).default;
-
   try {
     return React.createElement(component());
   } catch (err) {

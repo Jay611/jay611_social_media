@@ -81,6 +81,9 @@ input[type="number"] {
 /* ---------- Post Thumb ---------- */
 @import url("./post_thumb.css");
 
+/* ---------- Message ---------- */
+@import url("./message.css");
+
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
   .header .menu {
@@ -114,6 +117,9 @@ input[type="number"] {
   }
   .wrap_page {
     margin-bottom: 60px;
+  }
+  .message {
+    height: calc(100vh - 150px);
   }
 }
 
