@@ -32,6 +32,7 @@ code {
   max-width: 1000px;
   width: 100%;
   margin: auto;
+  /* position: relative; */
 }
 
 img {
@@ -83,6 +84,9 @@ input[type="number"] {
 
 /* ---------- Message ---------- */
 @import url("./message.css");
+
+/* ---------- Icons ---------- */
+@import url("./icons.css");
 
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {

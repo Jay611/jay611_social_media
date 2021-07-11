@@ -27,7 +27,7 @@ export const imageUpload = async (images) => {
     formData.append("cloud_name", "dhkcdaal8");
 
     const res = await fetch(
-      "https://api.cloudinary.com/v1_1/dhkcdaal8/image/upload",
+      "https://api.cloudinary.com/v1_1/dhkcdaal8/upload",
       {
         method: "POST",
         body: formData,
