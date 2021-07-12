@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 
@@ -8,7 +8,11 @@ import Icons from "../Icons";
 import { GLOBALTYPES } from "../../redux/actions/globalTypes";
 import { imageShow, videoShow } from "../../utils/mediaShow";
 import { imageUpload } from "../../utils/imageUpload";
-import { addMessage, getMessages } from "../../redux/actions/messageAction";
+import {
+  addMessage,
+  getMessages,
+  loadMoreMessages,
+} from "../../redux/actions/messageAction";
 import LoadIcon from "../../images/loading.gif";
 
 const RightSide = () => {
@@ -21,10 +25,32 @@ const RightSide = () => {
   const [media, setMedia] = useState([]);
   const [loadMedia, setLoadMedia] = useState(false);
 
+  const refDisplay = useRef();
+  const pageEnd = useRef();
+
+  const [page, setPage] = useState(0);
+  const [result, setResult] = useState(9);
+  const [data, setData] = useState([]);
+  const [isLoadMore, setIsLoadMore] = useState(0);
+
   useEffect(() => {
-    const newUser = message.users.find((user) => user._id === id);
-    if (newUser) {
-      setUser(newUser);
+    const newData = message.data.find((item) => item._id === id);
+    if (newData) {
+      setData(newData.messages);
+      setResult(newData.result);
+      setPage(newData.page);
+    }
+  }, [id, message.data]);
+
+  useEffect(() => {
+    if (id && message.users.length > 0) {
+      setTimeout(() => {
+        refDisplay.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      }, 50);
+      const newUser = message.users.find((user) => user._id === id);
+      if (newUser) {
+        setUser(newUser);
+      }
     }
   }, [id, message.users]);
 
@@ -72,17 +98,54 @@ const RightSide = () => {
     };
 
     setLoadMedia(false);
-    dispatch(addMessage({ msg, auth, socket }));
+    await dispatch(addMessage({ msg, auth, socket }));
+
+    if (refDisplay.current) {
+      refDisplay.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
   };
 
   useEffect(() => {
-    if (id) {
-      const getMessagesData = async () => {
+    const getMessagesData = async () => {
+      if (message.data.every((item) => item._id !== id)) {
         await dispatch(getMessages({ auth, id }));
-      };
-      getMessagesData();
+        setTimeout(() => {
+          refDisplay.current.scrollIntoView({
+            behavior: "smooth",
+            block: "end",
+          });
+        }, 50);
+      }
+    };
+    getMessagesData();
+  }, [auth, dispatch, id, message.data]);
+
+  // Load more
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsLoadMore((p) => p + 1);
+        }
+      },
+      {
+        threshold: 0.1,
+      }
+    );
+    observer.observe(pageEnd.current);
+  }, [setIsLoadMore]);
+
+  useEffect(() => {
+    if (isLoadMore > 1) {
+      if (result >= page * 9) {
+        dispatch(loadMoreMessages({ auth, id, page: page + 1 }));
+        setIsLoadMore(1)
+      }
     }
-  }, [auth, dispatch, id]);
+  }, [auth, dispatch, id, isLoadMore, page, result]);
 
   return (
     <>
@@ -98,8 +161,11 @@ const RightSide = () => {
         className="chat_container"
         style={{ height: media.length > 0 ? "calc(100% - 180px)" : "" }}
       >
-        <div className="chat_display">
-          {message.data.map((msg, index) => (
+        <div className="chat_display" ref={refDisplay}>
+          <button style={{ marginTop: "-25px", opacity: 0 }} ref={pageEnd}>
+            Load more
+          </button>
+          {data.map((msg, index) => (
             <div key={index}>
               {msg.sender !== auth.user._id ? (
                 <div className="chat_row other_message">
@@ -107,7 +173,7 @@ const RightSide = () => {
                 </div>
               ) : (
                 <div className="chat_row my_message">
-                  <MsgDisplay user={auth.user} msg={msg} theme={theme} />
+                  <MsgDisplay user={auth.user} msg={msg} theme={theme} data={data}/>
                 </div>
               )}
             </div>

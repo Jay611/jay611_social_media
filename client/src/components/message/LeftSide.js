@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +14,8 @@ const LeftSide = () => {
   const history = useHistory();
 
   const { id } = useParams();
+  const pageEnd = useRef();
+  const [page, setPage] = useState(0);
 
   const [search, setSearch] = useState("");
   const [searchUsers, setSearchUsers] = useState([]);
@@ -46,9 +48,29 @@ const LeftSide = () => {
   };
 
   useEffect(() => {
-    if(message.firstLoad) return;
-    dispatch(getConversations({auth}))
-  },[auth, dispatch, message.firstLoad])
+    if (message.firstLoad) return;
+    dispatch(getConversations({ auth }));
+  }, [auth, dispatch, message.firstLoad]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setPage((p) => p + 1);
+        }
+      },
+      {
+        threshold: 0.1,
+      }
+    );
+    observer.observe(pageEnd.current);
+  }, [setPage]);
+
+  useEffect(() => {
+    if (message.resultUsers >= (page - 1) * 9 && page > 1) {
+      dispatch(getConversations({ auth, page }));
+    }
+  }, [auth, dispatch, message.resultUsers, page]);
 
   return (
     <>
@@ -92,6 +114,10 @@ const LeftSide = () => {
             ))}
           </>
         )}
+
+        <button ref={pageEnd} style={{ opacity: 0 }}>
+          Load more
+        </button>
       </div>
     </>
   );

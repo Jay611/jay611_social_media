@@ -83,10 +83,18 @@ const messageCtrl = {
       ).paginating();
 
       const messages = await features.query
-        .sort("createdAt")
+        .sort("-createdAt")
         .populate("recipients", "avatar username fullname");
 
       res.json({ messages, result: messages.length });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+  deleteMessages: async (req, res) => {
+    try {
+      await Messages.findOneAndDelete({_id: req.params.id, sender: req.user._id})
+      res.json({msg:"Delete Success!"})
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }

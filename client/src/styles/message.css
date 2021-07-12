@@ -201,3 +201,21 @@
   border: 1px solid #ddd;
   border-radius: 14px 14px 14px 0;
 }
+
+.my_content {
+  position: relative;
+}
+
+.my_content .fa-trash {
+  position: absolute;
+  top: 50%;
+  left: -15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0;
+}
+
+.my_content:hover .fa-trash{
+  opacity: 1;
+}
