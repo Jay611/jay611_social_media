@@ -3,13 +3,16 @@ import { useHistory, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import { GLOBALTYPES } from "../../redux/actions/globalTypes";
-import { addUser, getConversations } from "../../redux/actions/messageAction";
+import {
+  MESS_TYPES,
+  getConversations,
+} from "../../redux/actions/messageAction";
 
 import { getDataAPI } from "../../utils/fetchData";
 import UserCard from "../UserCard";
 
 const LeftSide = () => {
-  const { auth, message } = useSelector((state) => state);
+  const { auth, message, online } = useSelector((state) => state);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -38,7 +41,11 @@ const LeftSide = () => {
   const handleAddUser = (user) => {
     setSearch("");
     setSearchUsers([]);
-    dispatch(addUser({ user, message }));
+    dispatch({
+      type: MESS_TYPES.ADD_USER,
+      payload: { ...user, text: "", media: [] },
+    });
+    dispatch({ type: MESS_TYPES.CHECK_ONLINE_OFFLINE, payload: online });
     return history.push(`/message/${user._id}`);
   };
 
@@ -71,6 +78,12 @@ const LeftSide = () => {
       dispatch(getConversations({ auth, page }));
     }
   }, [auth, dispatch, message.resultUsers, page]);
+
+  // Check user online / offline
+  useEffect(() => {
+    if (message.firstLoad)
+      dispatch({ type: MESS_TYPES.CHECK_ONLINE_OFFLINE, payload: online });
+  }, [dispatch, message.firstLoad, online]);
 
   return (
     <>
@@ -108,7 +121,13 @@ const LeftSide = () => {
                 onClick={() => handleAddUser(user)}
               >
                 <UserCard user={user} msg={true}>
-                  <i className="fas fa-circle" />
+                  {user.online ? (
+                    <i className="fas fa-circle text-success" />
+                  ) : (
+                    auth.user.followings.find(
+                      (item) => item._id === user._id
+                    ) && <i className="fas fa-circle" />
+                  )}
                 </UserCard>
               </div>
             ))}

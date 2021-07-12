@@ -57,7 +57,7 @@ const authCtrl = {
 
       const user = await Users.findOne({ email }).populate(
         "followers followings",
-        "-password"
+        "avatar username fullname followers followings"
       );
 
       if (!user)
@@ -106,7 +106,10 @@ const authCtrl = {
 
           const user = await Users.findById(result.id)
             .select("-password")
-            .populate("followers followings", "-paswword");
+            .populate(
+              "followers followings",
+              "avatar username fullname followers followings"
+            );
 
           if (!user)
             return res.status(400).json({ msg: "This user does not exist." });

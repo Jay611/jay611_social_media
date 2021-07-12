@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useParams, useHistory } from "react-router";
 
 import UserCard from "../UserCard";
 import MsgDisplay from "./MsgDisplay";
@@ -12,6 +12,7 @@ import {
   addMessage,
   getMessages,
   loadMoreMessages,
+  deleteConversation,
 } from "../../redux/actions/messageAction";
 import LoadIcon from "../../images/loading.gif";
 
@@ -32,6 +33,8 @@ const RightSide = () => {
   const [result, setResult] = useState(9);
   const [data, setData] = useState([]);
   const [isLoadMore, setIsLoadMore] = useState(0);
+
+  const history = useHistory();
 
   useEffect(() => {
     const newData = message.data.find((item) => item._id === id);
@@ -142,17 +145,25 @@ const RightSide = () => {
     if (isLoadMore > 1) {
       if (result >= page * 9) {
         dispatch(loadMoreMessages({ auth, id, page: page + 1 }));
-        setIsLoadMore(1)
+        setIsLoadMore(1);
       }
     }
   }, [auth, dispatch, id, isLoadMore, page, result]);
 
+  const handleDeleteConversation = () => {
+    dispatch(deleteConversation({ auth, id }));
+    return history.push("/message");
+  };
+
   return (
     <>
-      <div className="message_header">
+      <div className="message_header" style={{ cursor: "pointer" }}>
         {user.length !== 0 && (
           <UserCard user={user}>
-            <i className="fas fa-trash text-danger" />
+            <i
+              className="fas fa-trash text-danger"
+              onClick={handleDeleteConversation}
+            />
           </UserCard>
         )}
       </div>
@@ -173,7 +184,12 @@ const RightSide = () => {
                 </div>
               ) : (
                 <div className="chat_row my_message">
-                  <MsgDisplay user={auth.user} msg={msg} theme={theme} data={data}/>
+                  <MsgDisplay
+                    user={auth.user}
+                    msg={msg}
+                    theme={theme}
+                    data={data}
+                  />
                 </div>
               )}
             </div>
