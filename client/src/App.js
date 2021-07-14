@@ -22,6 +22,8 @@ import io from "socket.io-client";
 import { GLOBALTYPES } from "./redux/actions/globalTypes";
 import SocketClient from "./SocketClient";
 
+import Peer from "peerjs";
+
 function App() {
   const { auth, status, modal, call } = useSelector((state) => state);
   const dispatch = useDispatch();
@@ -53,6 +55,14 @@ function App() {
       });
     }
   }, []);
+
+  useEffect(() => {
+    const newPeer = new Peer(undefined, {
+      host: "/",
+      port: "3001",
+    });
+    dispatch({ type: GLOBALTYPES.PEER, payload: newPeer });
+  }, [dispatch]);
 
   return (
     <Router>

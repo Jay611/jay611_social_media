@@ -22,7 +22,7 @@ const spawnNotification = (body, icon, url, title) => {
 };
 
 const SocketClient = () => {
-  const { auth, socket, notify, online } = useSelector((state) => state);
+  const { auth, socket, notify, online, call } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   const audioRef = useRef();
@@ -156,6 +156,26 @@ const SocketClient = () => {
 
     return () => socket.off("checkUserOffline");
   }, [dispatch, socket]);
+
+  // Call user
+  useEffect(() => {
+    socket.on("callUserToClient", (data) => {
+      dispatch({ type: GLOBALTYPES.CALL, payload: data });
+    });
+
+    return () => socket.off("callUserToClient");
+  }, [dispatch, socket]);
+
+  useEffect(() => {
+    socket.on("userBusy", (data) => {
+      dispatch({
+        type: GLOBALTYPES.ALERT,
+        payload: { error: `${call.username} is busy!` },
+      });
+    });
+
+    return () => socket.off("userBusy");
+  }, [call, dispatch, socket]);
 
   return (
     <>

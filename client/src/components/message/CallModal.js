@@ -4,7 +4,7 @@ import Avatar from "../Avatar";
 import { GLOBALTYPES } from "../../redux/actions/globalTypes";
 
 const CallModal = () => {
-  const { call } = useSelector((state) => state);
+  const { auth, call, peer, socket } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   const [mins, setMins] = useState(0);
@@ -29,6 +29,7 @@ const CallModal = () => {
   // End Call
   const handleEndCall = () => {
     dispatch({ type: GLOBALTYPES.CALL, payload: null });
+    socket.emit("endCall", call);
   };
 
   useEffect(() => {
@@ -41,6 +42,14 @@ const CallModal = () => {
       return () => clearTimeout(timer);
     }
   }, [dispatch, answer]);
+
+  useEffect(() => {
+    socket.on("endCallToClient", (data) => {
+      dispatch({ type: GLOBALTYPES.CALL, payload: null });
+    });
+
+    return () => socket.off("endCallToClient");
+  }, [dispatch, socket]);
 
   // Answer Call
   const handleAnswer = () => {
@@ -55,40 +64,59 @@ const CallModal = () => {
           <h4>{call.username}</h4>
           <h6>{call.fullname}</h6>
 
-          <div>
-            {call.video ? (
-              <span>Calling video...</span>
-            ) : (
-              <span>Calling audio...</span>
-            )}
-          </div>
+          {answer ? (
+            <div>
+              <span>{mins.toString().length < 2 ? "0" + mins : mins}</span>
+              <span>:</span>
+              <span>
+                {seconds.toString().length < 2 ? "0" + seconds : seconds}
+              </span>
+            </div>
+          ) : (
+            <div>
+              {call.video ? (
+                <span>Calling video...</span>
+              ) : (
+                <span>Calling audio...</span>
+              )}
+            </div>
+          )}
         </div>
 
-        <div className="timer">
-          <small>{mins.toString().length < 2 ? "0" + mins : mins}</small>
-          <small>:</small>
-          <small>
-            {seconds.toString().length < 2 ? "0" + seconds : seconds}
-          </small>
-        </div>
+        {!answer && (
+          <div className="timer">
+            <small>{mins.toString().length < 2 ? "0" + mins : mins}</small>
+            <small>:</small>
+            <small>
+              {seconds.toString().length < 2 ? "0" + seconds : seconds}
+            </small>
+          </div>
+        )}
 
         <div className="call_menu">
           <span className="material-icons text-danger" onClick={handleEndCall}>
             call_end
           </span>
 
-          <>
-            {call.video ? (
-              <span
-                className="material-icons text-success"
-                onClick={handleAnswer}
-              >
-                videocam
-              </span>
-            ) : (
-              <span className="material-icons text-success">call</span>
-            )}
-          </>
+          {call.recipient === auth.user._id && !answer && (
+            <>
+              {call.video ? (
+                <span
+                  className="material-icons text-success"
+                  onClick={handleAnswer}
+                >
+                  videocam
+                </span>
+              ) : (
+                <span
+                  className="material-icons text-success"
+                  onClick={handleAnswer}
+                >
+                  call
+                </span>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
