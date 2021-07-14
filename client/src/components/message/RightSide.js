@@ -151,8 +151,32 @@ const RightSide = () => {
   }, [auth, dispatch, id, isLoadMore, page, result]);
 
   const handleDeleteConversation = () => {
-    dispatch(deleteConversation({ auth, id }));
-    return history.push("/message");
+    if (window.confirm("Do you want to delete?")) {
+      dispatch(deleteConversation({ auth, id }));
+      return history.push("/message");
+    }
+  };
+
+  // Call
+  const caller = ({ video }) => {
+    const { _id, avatar, username, fullname } = user;
+    const msg = {
+      sender: auth.user._id,
+      recipient: _id,
+      avatar,
+      username,
+      fullname,
+      video,
+    };
+    dispatch({ type: GLOBALTYPES.CALL, payload: msg });
+  };
+
+  const handleAudioCall = () => {
+    caller({ video: false });
+  };
+
+  const handleVideoCall = () => {
+    caller({ video: true });
   };
 
   return (
@@ -160,10 +184,14 @@ const RightSide = () => {
       <div className="message_header" style={{ cursor: "pointer" }}>
         {user.length !== 0 && (
           <UserCard user={user}>
-            <i
-              className="fas fa-trash text-danger"
-              onClick={handleDeleteConversation}
-            />
+            <div>
+              <i className="fas fa-phone-alt" onClick={handleAudioCall} />
+              <i className="fas fa-video mx-3" onClick={handleVideoCall} />
+              <i
+                className="fas fa-trash text-danger"
+                onClick={handleDeleteConversation}
+              />
+            </div>
           </UserCard>
         )}
       </div>

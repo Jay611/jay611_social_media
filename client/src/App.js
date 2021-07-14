@@ -10,6 +10,7 @@ import Register from "./pages/register";
 import Alert from "./components/alert/Alert";
 import Header from "./components/header/Header";
 import StatusModal from "./components/StatusModal";
+import CallModal from "./components/message/CallModal";
 
 import { useSelector, useDispatch } from "react-redux";
 import { refreshToken } from "./redux/actions/authAction";
@@ -22,7 +23,7 @@ import { GLOBALTYPES } from "./redux/actions/globalTypes";
 import SocketClient from "./SocketClient";
 
 function App() {
-  const { auth, status, modal } = useSelector((state) => state);
+  const { auth, status, modal, call } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -62,6 +63,7 @@ function App() {
           {auth.token && <Header />}
           {status && <StatusModal />}
           {auth.token && <SocketClient />}
+          {call && <CallModal />}
 
           <Route exact path="/" component={auth.token ? Home : Login} />
           <Route exact path="/register" component={Register} />
