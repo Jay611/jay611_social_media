@@ -32,17 +32,20 @@ const Menu = () => {
           </li>
         ))}
 
-        <li className="nav-item dropdown">
+        <li
+          className="nav-item dropdown mx-2"
+          style={{ cursor: "pointer", opacity: 1 }}
+        >
           <span
-            className="nav-link position-relative"
-            id="navbarDropdown"
-            role="button"
+            className="nav-link"
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
             <span
               className="material-icons"
-              style={{ color: notify.data.length > 0 ? "crimson" : "" }}
+              style={{
+                color: notify.data.length > 0 ? "crimson" : "",
+              }}
             >
               favorite
             </span>
@@ -50,22 +53,20 @@ const Menu = () => {
             <span className="notify_length">{notify.data.length}</span>
           </span>
 
-          <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+          <div className="dropdown-menu dropdown-menu-end">
             <NotifyModal />
           </div>
         </li>
 
-        <li className="nav-item dropdown">
+        <li className="nav-item dropdown" style={{ opacity: 1 }}>
           <span
-            className="nav-link dropdown-toggle"
-            id="navbarDropdown"
-            role="button"
+            className="nav-link"
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
             <Avatar src={auth.user.avatar} size="medium-avatar" />
           </span>
-          <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+          <div className="dropdown-menu dropdown-menu-end">
             <Link className="dropdown-item" to={`/profile/${auth.user._id}`}>
               Profile
             </Link>

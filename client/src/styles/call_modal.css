@@ -37,12 +37,14 @@
   justify-content: space-around;
 }
 
-.call_menu span {
+.call_menu button {
   font-size: 2rem;
   background: #eee;
   padding: 15px;
   border-radius: 50%;
   cursor: pointer;
+  border: none;
+  outline: none;
 }
 
 .call_modal .show_video {
@@ -64,6 +66,7 @@
   top: 0;
   right: 0;
   width: 300px;
+  max-height: 250px;
   border-radius: 5px;
   border: 1px solid crimson;
   z-index: 10;
@@ -80,6 +83,8 @@
   padding: 15px;
   border-radius: 50%;
   cursor: pointer;
+  border: none;
+  outline: none;
 }
 
 .call_modal .time_video {

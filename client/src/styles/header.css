@@ -28,18 +28,16 @@
   opacity: 1;
 }
 
+.dropdown-menu {
+  position: absolute !important;
+}
+
 .header .menu li.active {
   opacity: 1;
 }
 
 .header .menu .material-icons {
   font-size: 30px;
-}
-
-.header .menu .dropdown-menu {
-  position: absolute;
-  right: 0;
-  left: inherit;
 }
 
 .header .menu label {

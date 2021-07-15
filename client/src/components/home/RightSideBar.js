@@ -39,7 +39,9 @@ const RightSideBar = () => {
       )}
 
       <div className="my-2" style={{ opacity: 0.5 }}>
-        <a href="https://github.com/Jay611" target="_blank" rel="noreferrer">
+        <a href="https://github.com/Jay611" target="_blank" rel="noreferrer" style={{
+          wordBreak:'break-all'
+        }}>
           https://github.com/Jay611
         </a>
         <small className="d-block">Welcome to my github.</small>

@@ -11,6 +11,10 @@
   overflow: auto;
 }
 
+.dropup {
+  cursor: pointer;
+}
+
 .comment_input .postBtn {
   border: none;
   outline: none;
